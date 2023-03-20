@@ -1,0 +1,38 @@
+<script defer>
+  function swymCallbackFn(swat) {
+    function changeVariantId(swymSwatchProductId, swymSwatchVariantId) {
+      let buttonToPassVariantChange = document.getElementById(swymSwatchProductId);
+      if (buttonToPassVariantChange) {
+        buttonToPassVariantChange.setAttribute("data-variant-id", swymSwatchVariantId);
+        swat.initializeActionButtons("Body");
+      }
+    }
+    function generateData(e) {
+      let target = e?.detail?.target;
+      if (!target) {
+        console.warn("Missing target in event:", e);
+        return;
+      }
+      let swymSwatchVariantId = target.getAttribute("data-variant-id");
+      let swymSwatchProductId = target.getAttribute("data-product-id");
+      if (!swymSwatchVariantId || !swymSwatchProductId) {
+        console.warn("Missing data-variant-id or data-product-id attribute in target:", target);
+        return;
+      }
+      console.log("Variant ID:", swymSwatchVariantId, "Product ID:", swymSwatchProductId);
+      changeVariantId(swymSwatchProductId, swymSwatchVariantId);
+    }
+    document.addEventListener("swym:swatch-integration", function(e) {
+      generateData(e);
+    });
+  }
+  if (!window.SwymCallbacks) {
+    window.SwymCallbacks = [];
+  }
+  window.SwymCallbacks.push(swymCallbackFn);
+</script>
+<style>
+  button.swym-button.swym-add-to-wishlist-view-product.swym-inject.swym-loaded {
+    display: none !important;
+  }
+</style>
